@@ -1,0 +1,28 @@
+name: "Whitelist Domain with Auth0 Action"
+description: "Whitelist /callback and /logout URLs with an app in Auth0 (works really nicely with PR apps)."
+branding:
+  color: white
+  icon: lock
+inputs:
+  app-base-url:
+    description: "Base domain for your PR apps"
+    required: true
+  auth0-application-id:
+    description: "App ID we are going to whitelist URLs for"
+    required: true
+  auth0-management-client-secret:
+    description: "Client secret obtained from Auth0"
+    required: true
+  auth0-management-client-id:
+    description: "Client ID obtained from Auth0"
+    required: true
+  auth0-management-domain:
+    description: "Auth domain in Auth0"
+    required: true
+  command:
+    description: "Either whitelist or remove"
+    default: "whitelist"
+    required: false
+runs:
+  using: "node12"
+  main: "index.js"
