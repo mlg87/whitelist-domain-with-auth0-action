@@ -38,9 +38,6 @@ const ManagementClient = require("auth0").ManagementClient;
     const callbackUrl = `${prUrl}/callback`;
     const logoutUrl = `${prUrl}/logout`;
 
-    console.log("authZeroApplication", authZeroApplication);
-
-    // TODO add logout return to URLs
     const callbackIndex = authZeroApplication.callbacks.indexOf(callbackUrl);
     const logoutIndex = authZeroApplication.allowed_logout_urls.indexOf(
       logoutUrl
