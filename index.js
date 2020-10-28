@@ -10,6 +10,7 @@ const ManagementClient = require("auth0").ManagementClient;
     //
     const appBaseUrl = core.getInput("app-base-url");
     const appendCallbackUrl = core.getInput("append-callback-string");
+    const appendLogoutUrl = core.getInput("append-logout-string");
     const authZeroApplicationId = core.getInput("auth0-application-id");
     const authZeroManagementClientSecret = core.getInput(
       "auth0-management-client-secret"
@@ -19,7 +20,6 @@ const ManagementClient = require("auth0").ManagementClient;
     );
     const authZeroManagementDomain = core.getInput("auth0-management-domain");
     const command = core.getInput("command");
-    const registerLogoutUrl = core.getInput("register-logout-url");
     //
     // ─── AUTH0 SETUP ────────────────────────────────────────────────────────────────
     //
@@ -38,10 +38,13 @@ const ManagementClient = require("auth0").ManagementClient;
     //
     const prUrl = `${appBaseUrl}/pr-${pull_request.number}-${repository.name}`;
     let callbackUrl = prUrl;
-    if (appendCallbackUrl !== "false") {
+    if (appendCallbackUrl === "true") {
       callbackUrl = `${prUrl}/callback`;
     }
-    const logoutUrl = `${prUrl}/logout`;
+    let logoutUrl = prUrl;
+    if (appendLogoutUrl === "true") {
+      logoutUrl = `${prUrl}/logout`;
+    }
 
     const callbackIndex = authZeroApplication.callbacks.indexOf(callbackUrl);
     const logoutIndex = authZeroApplication.allowed_logout_urls.indexOf(
@@ -59,7 +62,7 @@ const ManagementClient = require("auth0").ManagementClient;
         });
       }
 
-      if (logoutIndex < 0 && registerLogoutUrl === "true") {
+      if (logoutIndex < 0) {
         console.log(
           `Adding ${logoutUrl} to ${authZeroApplication.name} logouts`
         );
@@ -77,7 +80,7 @@ const ManagementClient = require("auth0").ManagementClient;
         });
       }
 
-      if (logoutIndex >= 0 && registerLogoutUrl === "true") {
+      if (logoutIndex >= 0) {
         console.log(`Removing ${logoutUrl} from ${authZeroApplication.name}`);
         authZeroApplication.allowed_logout_urls.splice(logoutIndex, 1);
         await managementClient.clients.update(apiParams, {
