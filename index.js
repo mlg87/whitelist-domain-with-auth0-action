@@ -9,6 +9,7 @@ const ManagementClient = require("auth0").ManagementClient;
     // ─── INPUTS ─────────────────────────────────────────────────────────────────────
     //
     const appBaseUrl = core.getInput("app-base-url");
+    const appendCallbackUrl = core.getInput("append-callback-string");
     const authZeroApplicationId = core.getInput("auth0-application-id");
     const authZeroManagementClientSecret = core.getInput(
       "auth0-management-client-secret"
@@ -18,6 +19,7 @@ const ManagementClient = require("auth0").ManagementClient;
     );
     const authZeroManagementDomain = core.getInput("auth0-management-domain");
     const command = core.getInput("command");
+    const registerLogoutUrl = core.getInput("register-logout-url");
     //
     // ─── AUTH0 SETUP ────────────────────────────────────────────────────────────────
     //
@@ -35,7 +37,10 @@ const ManagementClient = require("auth0").ManagementClient;
     // ─── URLS ───────────────────────────────────────────────────────────────────────
     //
     const prUrl = `${appBaseUrl}/pr-${pull_request.number}-${repository.name}`;
-    const callbackUrl = `${prUrl}/callback`;
+    let callbackUrl = prUrl;
+    if (appendCallbackUrl !== "false") {
+      callbackUrl = `${prUrl}/callback`;
+    }
     const logoutUrl = `${prUrl}/logout`;
 
     const callbackIndex = authZeroApplication.callbacks.indexOf(callbackUrl);
@@ -54,7 +59,7 @@ const ManagementClient = require("auth0").ManagementClient;
         });
       }
 
-      if (logoutIndex < 0) {
+      if (logoutIndex < 0 && registerLogoutUrl === "true") {
         console.log(
           `Adding ${logoutUrl} to ${authZeroApplication.name} logouts`
         );
@@ -72,7 +77,7 @@ const ManagementClient = require("auth0").ManagementClient;
         });
       }
 
-      if (logoutIndex >= 0) {
+      if (logoutIndex >= 0 && registerLogoutUrl === "true") {
         console.log(`Removing ${logoutUrl} from ${authZeroApplication.name}`);
         authZeroApplication.allowed_logout_urls.splice(logoutIndex, 1);
         await managementClient.clients.update(apiParams, {

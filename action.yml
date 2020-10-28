@@ -7,6 +7,10 @@ inputs:
   app-base-url:
     description: "Base domain for your PR apps"
     required: true
+  append-callback-string:
+    description: "Boolean indicating whether or not to append '/callback' to the URL to register with Auth0"
+    default: "true"
+    required: false
   auth0-application-id:
     description: "App ID we are going to whitelist URLs for"
     required: true
@@ -22,6 +26,10 @@ inputs:
   command:
     description: "Either whitelist or remove"
     default: "whitelist"
+    required: false
+  register-logout-url:
+    description: "Boolean indicatiing whether or not to register a logout URL with Auth0"
+    default: "true"
     required: false
 runs:
   using: "node12"
