@@ -18,7 +18,7 @@ inputs:
     description: "Client secret obtained from Auth0"
     required: true
   auth0-management-client-id:
-    description: "Client ID obtained from Auth0"
+    description: "Client ID obtained from Auth0. This is for a machine to machine app that has access to the Auth0 Management API"
     required: true
   auth0-management-domain:
     description: "Auth domain in Auth0"
